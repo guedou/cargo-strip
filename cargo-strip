@@ -1,0 +1,25 @@
+#!/bin/sh
+# Guillaume Valadon <guillaume@valadon.net>
+
+# Check if mandatory binaries are installed
+function detect_binary {
+    command -v $1 > /dev/null || (echo "Please install the $1 command!" ; return 1)
+}
+
+detect_binary "jq" || exit 1
+detect_binary "strip" || exit 1
+
+# Retrieve the binary name
+METADATA=`cargo metadata --format-version 1`
+BINARY_NAME=`echo ${METADATA} |jq -r '.packages[].targets[] | if .kind[] == "bin" then . else empty end |.name'`
+
+# Strip the binary if needed
+for BINARY in target/*/${BINARY_NAME}
+do
+    if [ ${BINARY} -nt ${BINARY}.strip_info ]
+    then
+        strip ${BINARY}
+        touch ${BINARY}.strip_info
+        echo "${BINARY} stripped"
+    fi
+done
