@@ -10,7 +10,7 @@ detect_binary "jq" || exit 1
 detect_binary "strip" || exit 1
 
 # Get crate metadata
-METADATA=$(cargo metadata --format-version 1 2>/dev/null)
+METADATA=$(cargo metadata --no-deps --format-version 1 2>/dev/null)
 if [ "${METADATA}" = "" ]
 then
     echo "crate metadata is empty!"
@@ -18,7 +18,7 @@ then
 fi
 
 # Retrieve the binary name and the target directory
-BINARY_NAME=$(echo "${METADATA}" |jq -r '.packages[].targets[] |if (.src_path |contains(".cargo") |not) and (.kind[] == "bin") and (.crate_types[] == "bin") then . else empty end |.name')
+BINARY_NAME=$(echo "${METADATA}" |jq -r '.packages[].targets[] |if (.kind[] == "bin") and (.crate_types[] == "bin") then . else empty end |.name')
 TARGET_DIRECTORY=$(echo "${METADATA}" |jq -r .target_directory)
 
 # Strip the binary if needed
