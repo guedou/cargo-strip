@@ -17,9 +17,8 @@ then
     exit 2
 fi
 
-# Retrieve the binary name
-METADATA=$(cargo metadata --format-version 1)
-BINARY_NAME=$(echo "${METADATA}" |jq -r '.packages[].targets[] | if .kind[] == "bin" then . else empty end |.name')
+# Retrieve binary names
+BINARY_NAME=$(echo "${METADATA}" |jq -r jq -r '.packages[].targets[] |if (.src_path |contains(".cargo") |not) and (.kind[] == "bin") and (.crate_types[] == "bin") then . else empty end |.name')
 
 # Strip the binary if needed
 for BINARY in target/*/"${BINARY_NAME}"
