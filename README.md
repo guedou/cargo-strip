@@ -1,8 +1,8 @@
 # cargo-strip
 
-A cargo subcommand that reduces the size of Rust binaries using the `strip` command.
-
 [![Twitter Follow](https://img.shields.io/twitter/follow/guedou.svg?style=social)](https://twitter.com/intent/follow?screen_name=guedou)
+
+A cargo subcommand that reduces the size of Rust binaries using the `strip` command.
 
 ## Installation & Usage
 
