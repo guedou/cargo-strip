@@ -19,9 +19,10 @@ fi
 
 # Retrieve the binary name and the target directory
 BINARY_NAME=$(echo "${METADATA}" |jq -r '.packages[].targets[] |if (.src_path |contains(".cargo") |not) and (.kind[] == "bin") and (.crate_types[] == "bin") then . else empty end |.name')
+TARGET_DIRECTORY=$(echo "${METADATA}" |jq -r .target_directory)
 
 # Strip the binary if needed
-for BINARY in target/*/"${BINARY_NAME}"
+for BINARY in "${TARGET_DIRECTORY}"/*/"${BINARY_NAME}"
 do
     if [ "${BINARY}" -nt "${BINARY}.strip_info" ]
     then
