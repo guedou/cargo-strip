@@ -9,6 +9,14 @@ detect_binary() {
 detect_binary "jq" || exit 1
 detect_binary "strip" || exit 1
 
+# Get crate metadata
+METADATA=$(cargo metadata --format-version 1 2>/dev/null)
+if [ "${METADATA}" = "" ]
+then
+    echo "crate metadata is empty!"
+    exit 2
+fi
+
 # Retrieve the binary name
 METADATA=$(cargo metadata --format-version 1)
 BINARY_NAME=$(echo "${METADATA}" |jq -r '.packages[].targets[] | if .kind[] == "bin" then . else empty end |.name')
