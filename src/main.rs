@@ -17,13 +17,23 @@ fn main() -> Result<(), String> {
         .manifest_path("./Cargo.toml")
         .no_deps()
         .exec()
-        .unwrap(); // TODO: unwrap
+        .or_else(|_e| Err("Cannot parse Cargo.toml!"))?;
 
-    for entry in fs::read_dir(metadata.target_directory).unwrap() { // TODO: unwrap
-        let entry = entry.unwrap(); // TODO: unwrap
-        if !entry.file_type().unwrap().is_dir() { // TODO: unwrap
+    // Iterate over the target directory
+    for entry in fs::read_dir(metadata.target_directory)
+        .or_else(|_e| Err("Cannot access the target directory!"))?
+    {
+        // Identify directories and continue otherwise
+        let entry = entry.or_else(|_e| Err("IO error!"))?;
+        if !entry
+            .file_type()
+            .or_else(|_e| Err("Cannot get file type!"))?
+            .is_dir()
+        {
             continue;
         }
+
+        // Iterate over possible binaries
         for binary in metadata
             .packages
             .iter()
@@ -32,21 +42,25 @@ fn main() -> Result<(), String> {
             .filter(|t| t.kind == vec!["bin"])
             .map(|x| &x.name)
         {
+            // Check if the binary exists in the current directory
             let mut path = entry.path();
             path.push(binary);
             if !path.is_file() {
                 continue;
             }
+
             // TODO: .cargo-strip_info
-            let status = Command::new("strip")
+
+            // Strip the binary
+            Command::new("strip")
                 .arg(&path)
-                .status();
-            let path = path.as_os_str().to_str().unwrap(); // TODO: unwrap
-            if status.is_err() {
-                eprintln!("Executing strip failed on {} !", path);
-                return;
-            }
-            println!("{} striped!", path);
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .status()
+                .or_else(|_e| Err("Cannot execute strip!"))?;
+            println!("{:?} stripped!", path);
         }
     }
+
+    Ok(())
 }
