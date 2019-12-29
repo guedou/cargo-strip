@@ -7,13 +7,13 @@ use std::io::ErrorKind;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
-fn strip_binary(filepath: &PathBuf) -> Result<(), String> {
+fn strip_binary(filepath: &mut PathBuf) -> Result<(), String> {
     // Retrieve files metadata
-    let strip_info_filename = format!("{}.cargo-strip_info", filepath.display()); // GV: this looks ugly
-    let strip_info_metadata = fs::metadata(&strip_info_filename);
+    filepath.set_extension("cargo-strip_info");
+    let strip_info_metadata = fs::metadata(&filepath.as_path());
+    filepath.set_extension("");
 
-    let binary_filename = format!("{}", filepath.as_path().display()); // GV: this looks ugly
-    let binary_metadata = fs::metadata(&binary_filename);
+    let binary_metadata = fs::metadata(filepath.as_path());
 
     // Determine if the binary needs to be stripped
     let strip_needed = match (binary_metadata, strip_info_metadata) {
@@ -36,12 +36,14 @@ fn strip_binary(filepath: &PathBuf) -> Result<(), String> {
     }
 
     // Create the .cargo-strip_info file
-    File::create(&strip_info_filename)
+    filepath.set_extension("cargo-strip_info");
+    File::create(&filepath)
         .or_else(|_| Err("Cannot create the .cargo-strip_info file!"))?;
+    filepath.set_extension("");
 
     // Strip the binary
     Command::new("strip")
-        .arg(filepath)
+        .arg(&filepath)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
@@ -96,7 +98,7 @@ fn main() -> Result<(), String> {
                 continue;
             }
 
-            strip_binary(&path)?;
+            strip_binary(&mut path)?;
         }
     }
 
