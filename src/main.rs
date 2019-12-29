@@ -1,8 +1,23 @@
-// Guillaume Valadon <guillaume@valadon.net>
+// Copyright (C) 2019 Guillaume Valadon <guillaume@valadon.net>
 
 use cargo_metadata::MetadataCommand;
 use std::fs;
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
+
+fn strip_binary(filepath: &PathBuf) -> Result<(), String> {
+    // TODO: .cargo-strip_info
+
+    // Strip the binary
+    Command::new("strip")
+        .arg(filepath)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .or_else(|_e| Err("Cannot execute strip!"))?;
+
+    Ok(())
+}
 
 fn main() -> Result<(), String> {
     // Check if the strip binary is available
@@ -49,15 +64,7 @@ fn main() -> Result<(), String> {
                 continue;
             }
 
-            // TODO: .cargo-strip_info
-
-            // Strip the binary
-            Command::new("strip")
-                .arg(&path)
-                .stdout(Stdio::null())
-                .stderr(Stdio::null())
-                .status()
-                .or_else(|_e| Err("Cannot execute strip!"))?;
+            strip_binary(&path)?;
             println!("{:?} stripped!", path);
         }
     }
