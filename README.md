@@ -7,4 +7,11 @@ A cargo subcommand that reduces the size of Rust binaries using the `strip` comm
 
 ## Installation & Usage
 
-Copy the `cargo-strip` script to a directory contained in your $PATH, then run `cargo strip`.
+Run the following command:
+```
+cargo install --force cargo-strip
+```
+Simply run:
+```
+cargo strip
+```
