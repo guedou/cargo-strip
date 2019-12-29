@@ -1,0 +1,8 @@
+[package]
+name = "cargo-strip"
+version = "0.2.0"
+authors = ["Guillaume Valadon <guillaume@valadon.net>"]
+edition = "2018"
+
+[dependencies]
+cargo_metadata = "0.9.1"
