@@ -57,24 +57,24 @@ fn main() -> Result<(), String> {
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
-        .or_else(|_e| Err("Please install strip!"))?;
+        .or_else(|_| Err("Please install strip!"))?;
 
     // Retrieve package information
     let metadata = MetadataCommand::new()
         .manifest_path("./Cargo.toml")
         .no_deps()
         .exec()
-        .or_else(|_e| Err("Cannot parse Cargo.toml!"))?;
+        .or_else(|_| Err("Cannot parse Cargo.toml!"))?;
 
     // Iterate over the target directory
     for entry in fs::read_dir(metadata.target_directory)
-        .or_else(|_e| Err("Cannot access the target directory!"))?
+        .or_else(|_| Err("Cannot access the target directory!"))?
     {
         // Identify directories and continue otherwise
-        let entry = entry.or_else(|_e| Err("IO error!"))?;
+        let entry = entry.or_else(|_| Err("IO error!"))?;
         if !entry
             .file_type()
-            .or_else(|_e| Err("Cannot get file type!"))?
+            .or_else(|_| Err("Cannot get file type!"))?
             .is_dir()
         {
             continue;
