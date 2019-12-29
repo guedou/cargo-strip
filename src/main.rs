@@ -2,15 +2,17 @@
 
 use cargo_metadata::MetadataCommand;
 use std::fs;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
-fn main() {
-    let status = Command::new("strip").status();
-    if status.is_err() {
-        eprintln!("Please install strip!");
-        return;
-    }
+fn main() -> Result<(), String> {
+    // Check if the strip binary is available
+    Command::new("strip")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .or_else(|_e| Err("Please install strip!"))?;
 
+    // Retrieve package information
     let metadata = MetadataCommand::new()
         .manifest_path("./Cargo.toml")
         .no_deps()
