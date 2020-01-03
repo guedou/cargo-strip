@@ -35,6 +35,10 @@ fn strip_binary(filepath: &mut PathBuf) -> Result<(), String> {
         return Ok(());
     }
 
+    let filesize_before = fs::metadata(&filepath)
+        .or_else(|_| Err("Cannot get file size!"))?
+        .len();
+
     // Strip the binary
     Command::new("strip")
         .arg(&filepath)
@@ -42,12 +46,20 @@ fn strip_binary(filepath: &mut PathBuf) -> Result<(), String> {
         .stderr(Stdio::null())
         .status()
         .or_else(|_| Err("Cannot execute strip!"))?;
-    println!("{:?} stripped!", filepath);
+
+    let filesize_after = fs::metadata(&filepath)
+        .or_else(|_| Err("Cannot get file size!"))?
+        .len();
+
+    println!(
+        "{:?} stripped (reduced by {} kB)!",
+        filepath,
+        (filesize_before - filesize_after) / 1024
+    );
 
     // Create the .cargo-strip_info file
     filepath.set_extension("cargo-strip_info");
-    File::create(&filepath)
-        .or_else(|_| Err("Cannot create the .cargo-strip_info file!"))?;
+    File::create(&filepath).or_else(|_| Err("Cannot create the .cargo-strip_info file!"))?;
     filepath.set_extension("");
 
     Ok(())
