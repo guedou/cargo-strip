@@ -5,11 +5,11 @@ name: CI
 
 jobs:
   build_and_test:
-    name: Build cargo-strip
+    name: Build & run cargo-strip
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/cargo@v1
         with:
-          command: build
+          command: run
           args: --release
