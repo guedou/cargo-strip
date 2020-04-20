@@ -100,7 +100,6 @@ fn main() -> Result<(), String> {
             .iter()
             .flat_map(|p| &p.targets)
             .filter(|t| t.kind == vec!["bin"])
-            .filter(|t| t.kind == vec!["bin"])
             .map(|x| &x.name)
         {
             // Check if the binary exists in the current directory
