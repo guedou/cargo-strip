@@ -4,11 +4,29 @@ on: [push, pull_request]
 name: CI
 
 jobs:
-  build_and_test:
+  build_native:
     name: Build & run cargo-strip
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions-rs/cargo@v1
+        with:
+          command: run
+  build_arm:
+    name: Build & run cargo-strip on ARM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: armv7-unknown-linux-gnueabihf
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --target armv7-unknown-linux-gnueabihf
       - uses: actions-rs/cargo@v1
         with:
           command: run
