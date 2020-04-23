@@ -1,33 +1,38 @@
-# Trigger the workflow on push or pull request
-on: [push, pull_request]
+on: push
 
 name: CI
 
 jobs:
   build_native:
-    name: Build & run cargo-strip
+    name: Build & run
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/cargo@v1
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Build & run cargo-strip
+        uses: actions-rs/cargo@v1
         with:
           command: run
   build_arm:
-    name: Build & run cargo-strip on ARM
+    name: Build & run on ARM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Configure the ARM toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: armv7-unknown-linux-gnueabihf
           override: true
-      - uses: actions-rs/cargo@v1
+      - name: Build cargo-strip for ARM
+        uses: actions-rs/cargo@v1
         with:
           use-cross: true
           command: build
           args: --target armv7-unknown-linux-gnueabihf
-      - uses: actions-rs/cargo@v1
+      - name: Build & run cargo-strip on the ARM binary
+        uses: actions-rs/cargo@v1
         with:
           command: run
           args: -- --target armv7-unknown-linux-gnueabihf
