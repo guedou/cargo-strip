@@ -1,6 +1,6 @@
 [package]
 name = "cargo-strip"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Guillaume Valadon <guillaume@valadon.net>"]
 license = "MIT"
 readme = "README.md"
