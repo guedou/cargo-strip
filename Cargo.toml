@@ -9,5 +9,5 @@ description = "Strip Rust binaries created with cargo"
 edition = "2018"
 
 [dependencies]
-cargo_metadata = "0.9.1"
-clap = "2.33.0"
+cargo_metadata = "0.10.0"
+clap = "2.33.1"
