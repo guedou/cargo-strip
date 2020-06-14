@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 use cargo_metadata::MetadataCommand;
-use clap::{crate_version, App, Arg};
+use clap::{crate_version, App, Arg, SubCommand};
 
 fn strip_binary(filepath: &mut PathBuf) -> Result<(), String> {
     // Retrieve files metadata
@@ -71,12 +71,16 @@ fn main() -> Result<(), String> {
     // Parse command line arguments
     let matches = App::new("cargo-strip - reduces the size of binaries using the `strip` command")
         .version(&crate_version!()[..])
-        .arg(
-            Arg::with_name("target")
-                .short("t")
-                .long("target")
-                .takes_value(true)
-                .help("name of the target to strip"),
+        // cargo subcommand trick from https://github.com/clap-rs/clap/issues/937
+        .bin_name("cargo")
+        .subcommand(
+            SubCommand::with_name("strip").arg(
+                Arg::with_name("target")
+                    .short("t")
+                    .long("target")
+                    .takes_value(true)
+                    .help("name of the target to strip"),
+            ),
         )
         .get_matches();
 
