@@ -25,7 +25,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "cargo-strip"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "cargo_metadata 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.33.1 (registry+https://github.com/rust-lang/crates.io-index)",
