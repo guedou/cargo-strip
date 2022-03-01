@@ -4,6 +4,17 @@
 ![CI](https://github.com/guedou/cargo-strip/workflows/CI/badge.svg)
 [![Twitter Follow](https://img.shields.io/twitter/follow/guedou.svg?style=social)](https://twitter.com/intent/follow?screen_name=guedou)
 
+As of Rust 1.59, the `cargo` command is now able to [strip a binary](https://doc.rust-lang.org/beta/cargo/reference/profiles.html#strip). This can be enabled in your `Cargo.toml` in the following way:
+```
+[package]
+# ...
+
+[profile.release]
+strip="debuginfo"
+```
+
+---
+
 A cargo subcommand that reduces the size of Rust binaries using the `strip` command.
 
 ## Installation & Usage
